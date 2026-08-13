@@ -17,5 +17,5 @@ export enum Message {
 	TOKEN_CREATION_FAILED = 'Token creation error!',
 	NOT_ALLOWED_REQUEST = 'Not Allowed Request!',
 	NOT_ALLOWED_FORMAT = 'Please provide jpg, jpeg, or png images!',
-	SELF_SUBSCRIPTION_DENIED = 'Self subscription is denied',
+	SELF_SUBSCRIPTION_DENIED = 'Self subscription is denied!',
 }
