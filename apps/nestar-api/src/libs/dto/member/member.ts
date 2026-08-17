@@ -30,10 +30,10 @@ export class Member {
 	@Field(() => String)
 	memberImage?: string;
 
-	@Field(() => String)
+	@Field(() => String, { nullable: true })
 	memberAdress?: string;
 
-	@Field(() => String)
+	@Field(() => String, { nullable: true })
 	memberDesc?: string;
 
 	@Field(() => Int)
@@ -70,7 +70,7 @@ export class Member {
 	deletedAt?: Date;
 
 	@Field(() => Date)
-	createAt!: Date;
+	createdAt!: Date;
 
 	@Field(() => Date)
 	updatedAt!: Date;
