@@ -65,3 +65,4 @@ export class MemberService {
 		return 'updateMemberByAdmin executed';
 	}
 }
+  
