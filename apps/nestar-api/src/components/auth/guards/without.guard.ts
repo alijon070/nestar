@@ -9,8 +9,12 @@ export class WithoutGuard implements CanActivate {
 		console.info('--- @guard() Authentication [WithoutGuard] ---');
 
 		if (context.contextType === 'graphql') {
-			const request = context.getArgByIndex(2).req,
-				bearerToken = request.headers.authorization;
+			const request = context.getArgByIndex(2).req;
+
+			if (!request.body) {
+				request.body = {};
+			}
+			const bearerToken = request.headers.authorization;
 
 			if (bearerToken) {
 				try {

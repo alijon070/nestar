@@ -55,6 +55,9 @@ export class Member {
 	memberLikes!: number;
 
 	@Field(() => Int)
+	memberViews!: number;
+
+	@Field(() => Int)
 	memberComments!: number;
 
 	@Field(() => Int)
