@@ -15,7 +15,7 @@ import { WithoutGuard } from '../auth/guards/without.guard';
 import { GraphQLUpload, FileUpload } from 'graphql-upload';
 import { createWriteStream } from 'fs';
 import { Message } from '../../libs/enums/common.enum';
-import { extname } from 'path';
+import path, { extname } from 'path';
 
 @Resolver()
 export class MemberResolver {
@@ -142,9 +142,10 @@ export class MemberResolver {
 		const uploadedImages: string[] = [];
 		const promisedList = files.map(async (img: Promise<FileUpload>, index: number): Promise<Promise<void>> => {
 			try {
-				const { filename, mimetype, encoding, createReadStream } = await img;
+				const { filename, encoding, createReadStream } = await img;
 
-				const validMime = validMimeTypes.includes(mimetype);
+				const fileExtension = path.parse(filename).ext.toLowerCase();
+				const validMime = validMimeTypes.includes(fileExtension);
 				if (!validMime) throw new Error(Message.NOT_ALLOWED_FORMAT);
 
 				const imageName = getSerialForImage(filename);
