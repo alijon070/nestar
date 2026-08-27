@@ -15,6 +15,7 @@ import { WithoutGuard } from '../auth/guards/without.guard';
 import { GraphQLUpload, FileUpload } from 'graphql-upload';
 import { createWriteStream } from 'fs';
 import { Message } from '../../libs/enums/common.enum';
+import { extname } from 'path';
 
 @Resolver()
 export class MemberResolver {
@@ -104,13 +105,14 @@ export class MemberResolver {
 	@Mutation((returns) => String)
 	public async imageUploader(
 		@Args({ name: 'file', type: () => GraphQLUpload })
-		{ createReadStream, filename, mimetype }: FileUpload,
+		{ createReadStream, filename }: FileUpload,
 		@Args('target') target: String,
 	): Promise<string> {
 		console.log('Mutation: imageUploader');
 
 		if (!filename) throw new Error(Message.UPLOAD_FAILED);
-		const validMime = validMimeTypes.includes(mimetype);
+		const fileExtension = extname(filename).toLowerCase();
+		const validMime = validMimeTypes.includes(fileExtension);
 		if (!validMime) throw new Error(Message.NOT_ALLOWED_FORMAT);
 
 		const imageName = getSerialForImage(filename);
