@@ -1,56 +1,76 @@
-import { Field, InputType } from '@nestjs/graphql';
-import { IsNotEmpty, IsOptional, Length } from 'class-validator';
-import { MemberStatus, MemberType } from '../../enums/member.enum';
+import { Field, InputType, Int } from '@nestjs/graphql';
+import { IsInt, IsNotEmpty, IsOptional, Length, Min } from 'class-validator';
 import type { ObjectId } from 'mongoose';
+import { PropertyLocation, PropertyStatus, PropertyType } from '../../enums/property.enum';
 
 @InputType()
-export class MemberUpdate {
+export class PropertyUpdate {
 	@IsNotEmpty()
 	@Field(() => String)
-	_id?: ObjectId;
+	_id!: ObjectId;
 
 	@IsOptional()
-	@Field(() => MemberType, { nullable: true })
-	memberType?: MemberType;
+	@Field(() => PropertyType, { nullable: true })
+	propertyType?: PropertyType;
 
 	@IsOptional()
-	@Field(() => MemberStatus, { nullable: true })
-	MemberStatus?: MemberStatus;
+	@Field(() => PropertyStatus, { nullable: true })
+	propertyStatus?: PropertyStatus;
 
 	@IsOptional()
-	@Field(() => String, { nullable: true })
-	MemberPhone?: string;
-
-	@IsOptional()
-	@Length(3, 12)
-	@Field(() => String, { nullable: true })
-	memberNick?: string;
-
-	@IsOptional()
-	@Length(5, 12)
-	@Field(() => String, { nullable: true })
-	memberPassword?: string;
-
-	@IsOptional()
-	@Field(() => String, { nullable: true })
-	memberPhone?: string;
+	@Field(() => PropertyLocation, { nullable: true })
+	propertyLocation?: PropertyLocation;
 
 	@IsOptional()
 	@Length(3, 100)
 	@Field(() => String, { nullable: true })
-	memberFullName?: string;
+	propertyAddress?: string;
 
 	@IsOptional()
+	@Length(3, 100)
 	@Field(() => String, { nullable: true })
-	memberImage?: string;
+	propertyTitle?: string;
 
 	@IsOptional()
-	@Field(() => String, { nullable: true })
-	memberAdress?: string;
+	@Field(() => Number, { nullable: true })
+	propertyPrice?: number;
 
 	@IsOptional()
+	@Field(() => Number, { nullable: true })
+	propertySquare?: number;
+
+	@IsOptional()
+	@IsInt()
+	@Min(1)
+	@Field(() => Int, { nullable: true })
+	propertyBeds?: number;
+
+	@IsOptional()
+	@Field(() => Number, { nullable: true })
+	propertyRooms?: number;
+
+	@IsOptional()
+	@Field(() => [String], { nullable: true })
+	propertyImages?: string;
+
+	@IsOptional()
+	@Length(5, 200)
 	@Field(() => String, { nullable: true })
-	memberDesc?: string;
+	propertyDesc?: string;
+
+	@IsOptional()
+	@Field(() => Boolean, { nullable: true })
+	propertyBarter?: boolean;
+
+	@IsOptional()
+	@Field(() => Boolean, { nullable: true })
+	propertyRent?: boolean;
+
+	soldAt?: Date;
 
 	deleteAt?: Date;
+
+	@IsOptional()
+	@Field(() => Date, { nullable: true })
+	constructedAt?: Date;
 }
