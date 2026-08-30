@@ -15,6 +15,8 @@ export const availablePropertySorts = [
 	'propertyPrice',
 ];
 
+export const availableBoardArticleSorts = ['createdAt', 'updataAt', 'articleLikes', 'articleViews'];
+
 /**  IMAGE CONFIGURATION (config.js) **/
 
 export const validMimeTypes = ['.png', '.jpg', '.jpeg'];

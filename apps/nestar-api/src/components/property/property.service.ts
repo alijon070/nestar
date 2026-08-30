@@ -205,7 +205,7 @@ export class PropertyService {
 
 	/** ADMIN **/
 
-	public async getAllMembersByAdmin(input: AllPropertiesInquiry): Promise<Properties> {
+	public async getAllPropertiesByAdmin(input: AllPropertiesInquiry): Promise<Properties> {
 		const { propertyStatus, propertyLocationList } = input.search;
 		const match: T = {};
 		const sort: T = { [input?.sort ?? 'createdAt']: input?.direction ?? Direction.DESC };

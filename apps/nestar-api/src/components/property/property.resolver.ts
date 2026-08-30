@@ -93,7 +93,7 @@ export class PropertyResolver {
 	): Promise<Properties> {
 		console.log('Query: getAllPropertiesByAdmin');
 
-		return await this.propertyService.getAllMembersByAdmin(input);
+		return await this.propertyService.getAllPropertiesByAdmin(input);
 	}
 
 	@Roles(MemberType.ADMIN)
