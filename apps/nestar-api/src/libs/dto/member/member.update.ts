@@ -5,10 +5,6 @@ import type { ObjectId } from 'mongoose';
 
 @InputType()
 export class MemberUpdate {
-	@IsNotEmpty()
-	@Field(() => String)
-	_id?: ObjectId;
-
 	@IsOptional()
 	@Field(() => MemberType, { nullable: true })
 	memberType?: MemberType;
@@ -53,4 +49,19 @@ export class MemberUpdate {
 	memberDesc?: string;
 
 	deleteAt?: Date;
+}
+
+@InputType()
+export class MemberUpdateByAdmin {
+	@IsNotEmpty()
+	@Field(() => String)
+	_id!: ObjectId;
+
+	@IsOptional()
+	@Field(() => MemberType, { nullable: true })
+	memberType?: MemberType;
+
+	@IsOptional()
+	@Field(() => MemberStatus, { nullable: true })
+	memberStatus?: MemberStatus;
 }
