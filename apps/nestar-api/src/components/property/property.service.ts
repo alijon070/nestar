@@ -107,7 +107,7 @@ export class PropertyService {
 		this.shapeMatchQuery(match, input);
 		console.log('match:', match);
 
-		const result = await this.propertyModel
+		const result: Properties[] = await this.propertyModel
 			.aggregate([
 				{ $match: match },
 				{ $sort: sort },

@@ -101,7 +101,7 @@ export class BoardArticleService {
 
 		console.log('match:', match);
 
-		const result = await this.boardArticleModel
+		const result: BoardArticles[] = await this.boardArticleModel
 			.aggregate([
 				{ $match: match },
 				{ $sort: sort },
