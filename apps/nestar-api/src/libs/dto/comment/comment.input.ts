@@ -3,6 +3,7 @@ import { IsIn, IsNotEmpty, IsOptional, Length, Min } from 'class-validator';
 import type { ObjectId } from 'mongoose';
 import { CommentGroup } from '../../enums/comment.enum';
 import { Direction } from '../../enums/common.enum';
+import { availableCommentSorts } from '../../types/config';
 
 @InputType()
 export class CommentInput {
