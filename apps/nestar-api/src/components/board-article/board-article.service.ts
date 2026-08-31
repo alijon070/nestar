@@ -51,24 +51,24 @@ export class BoardArticleService {
 				articleStatus: BoardArticleStatus.ACTIVE,
 			};
 
-			const targetBoardArticle = await this.boardArticleModel.findOne(search).lean().exec();
+			const targetBoardArticle = await this.boardArticleModel.findOne(search).exec();
 			if (!targetBoardArticle) throw new InternalServerErrorException(Message.NO_DATA_FOUND);
 			console.log('targetBoardArticle:', targetBoardArticle);
-
-			const result = targetBoardArticle as unknown as BoardArticle;
 
 			if (memberId) {
 				const viewInput = { memberId: memberId, viewRefId: articleId, viewGroup: ViewGroup.ARTICLE };
 				const newView = await this.viewservice.recordView(viewInput);
 				if (newView) {
 					await this.boardArticleStatusEditor({ _id: articleId, targetKey: 'articleViews', modifier: 1 });
-					result.articleViews++;
 				}
+
+				const likeInput = { memberId: memberId, likeRefId: articleId, likeGroup: LikeGroup.ARTICLE };
+				targetBoardArticle.meLiked = await this.likeService.checkLikeExistence(likeInput);
 			}
 
-			result.memberData = await this.memberService.getMember(null, targetBoardArticle.memberId);
+			targetBoardArticle.memberData = await this.memberService.getMember(null, targetBoardArticle.memberId);
 
-			return result;
+			return targetBoardArticle;
 		} catch (err) {
 			console.log('Error, Service.model:', (err as Error).message);
 			throw new BadRequestException(Message.NO_DATA_FOUND);

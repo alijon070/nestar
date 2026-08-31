@@ -53,23 +53,23 @@ export class PropertyService {
 				propertyStatus: PropertyStatus.ACTIVE,
 			};
 
-			const targetProperty = await this.propertyModel.findOne(search).lean().exec();
+			const targetProperty = await this.propertyModel.findOne(search).exec();
 			if (!targetProperty) throw new InternalServerErrorException(Message.NO_DATA_FOUND);
-
-			const result = targetProperty as unknown as Property;
 
 			if (memberId) {
 				const viewInput = { memberId: memberId, viewRefId: propertyId, viewGroup: ViewGroup.PROPERTY };
 				const newView = await this.viewService.recordView(viewInput);
 				if (newView) {
 					await this.propertyStatusEditor({ _id: propertyId, targetKey: 'propertyViews', modifier: 1 });
-					result.propertyViews++;
 				}
+
+				const likeInput = { memberId: memberId, likeRefId: propertyId, likeGroup: LikeGroup.PROPERTY };
+				targetProperty.meLiked = await this.likeService.checkLikeExistence(likeInput);
 			}
 
-			result.memberData = await this.memberService.getMember(null, targetProperty.memberId);
+			targetProperty.memberData = await this.memberService.getMember(null, targetProperty.memberId);
 
-			return result;
+			return targetProperty;
 		} catch (err) {
 			console.log('Error, Service.model:', (err as Error).message);
 			throw new BadRequestException(Message.NO_DATA_FOUND);
@@ -195,17 +195,6 @@ export class PropertyService {
 		return result[0];
 	}
 
-	public async propertyStatusEditor(input: StatisticsModifier): Promise<Property> {
-		const { _id, targetKey, modifier } = input;
-
-		const result = await this.propertyModel
-			.findByIdAndUpdate(_id, { $inc: { [targetKey]: modifier } }, { new: true })
-			.exec();
-		if (!result) throw new Error(Message.NO_DATA_FOUND);
-
-		return result;
-	}
-
 	public async likeTargetProperty(memberId: ObjectId, likeRefId: ObjectId): Promise<Property> {
 		const target = await this.propertyModel.findOne({ _id: likeRefId, propertyStatus: PropertyStatus.ACTIVE }).exec();
 		if (!target) throw new InternalServerErrorException(Message.NO_DATA_FOUND);
@@ -282,6 +271,17 @@ export class PropertyService {
 		const search: T = { _id: propertyId, propertyStatus: PropertyStatus.DELETE },
 			result = await this.propertyModel.findOneAndDelete(search).exec();
 		if (!result) throw new InternalServerErrorException(Message.REMOVE_FAILED);
+
+		return result;
+	}
+
+	public async propertyStatusEditor(input: StatisticsModifier): Promise<Property> {
+		const { _id, targetKey, modifier } = input;
+
+		const result = await this.propertyModel
+			.findByIdAndUpdate(_id, { $inc: { [targetKey]: modifier } }, { new: true })
+			.exec();
+		if (!result) throw new Error(Message.NO_DATA_FOUND);
 
 		return result;
 	}
