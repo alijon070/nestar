@@ -62,6 +62,8 @@ export class CommentResolver {
 	public async removeCommentByAdmin(@Args('commentId') input: string): Promise<Comment> {
 		console.log('Mutation: removeCommentByAdmin');
 		const commentId = shapeIntoMongoObjectId(input);
+		console.log(commentId);
+
 		return await this.commentService.removeCommentByAdmin(commentId);
 	}
 }
