@@ -11,23 +11,27 @@ import { StatisticsModifier, T } from '../../libs/types/common';
 import { ViewService } from '../view/view.service';
 import { ViewInput } from '../../libs/dto/view/view.input';
 import { ViewGroup } from '../../libs/enums/view.enum';
+import { LikeInput } from '../../libs/dto/like/like.input';
+import { LikeGroup } from '../../libs/enums/like.enum';
+import { LikeService } from '../like/like.service';
 
 @Injectable()
 export class MemberService {
 	constructor(
 		@InjectModel('Member') private readonly memberModel: Model<Member>,
-		private authservice: AuthService,
-		private viewservice: ViewService,
+		private authService: AuthService,
+		private viewService: ViewService,
+		private likeService: LikeService,
 	) {}
 
 	public async signup(input: MemberInput): Promise<Member> {
-		input.memberPassword = await this.authservice.hashPassword(input.memberPassword);
+		input.memberPassword = await this.authService.hashPassword(input.memberPassword);
 		try {
 			const result = await this.memberModel.create(input);
-			result.accessToken = await this.authservice.createToken(result);
+			result.accessToken = await this.authService.createToken(result);
 			return result;
 		} catch (err) {
-			console.log('Error, Signup:', (err as Error).message);
+			console.log('Error, Service.model:', (err as Error).message);
 			throw new BadRequestException(Message.USED_NICK_PHONE);
 		}
 	}
@@ -46,10 +50,10 @@ export class MemberService {
 			throw new InternalServerErrorException(Message.NO_MEMBER_NICK);
 		}
 
-		const isMatch = await this.authservice.comparePasswords(input.memberPassword, response.memberPassword);
+		const isMatch = await this.authService.comparePasswords(input.memberPassword, response.memberPassword);
 		if (!isMatch) throw new InternalServerErrorException(Message.WRONG_PASSWORD);
 
-		response.accessToken = await this.authservice.createToken(response);
+		response.accessToken = await this.authService.createToken(response);
 
 		return response;
 	}
@@ -67,7 +71,7 @@ export class MemberService {
 			.exec();
 		if (!result) throw new InternalServerErrorException(Message.UPDATE_FAILED);
 
-		result.accessToken = await this.authservice.createToken(result);
+		result.accessToken = await this.authService.createToken(result);
 		return result;
 	}
 
@@ -83,7 +87,7 @@ export class MemberService {
 
 		if (memberId) {
 			const viewInput: ViewInput = { memberId: memberId, viewRefId: targetId, viewGroup: ViewGroup.MEMBER };
-			const newView = await this.viewservice.recordView(viewInput);
+			const newView = await this.viewService.recordView(viewInput);
 			if (newView) {
 				await this.memberModel.findOneAndUpdate(search, { $inc: { memberViews: 1 } }, { new: true }).exec();
 				targetMember.memberViews++;
@@ -117,6 +121,24 @@ export class MemberService {
 		if (!result) throw new InternalServerErrorException(Message.NO_DATA_FOUND);
 
 		return result[0];
+	}
+
+	public async likeTargetMember(memberId: ObjectId, likeRefId: ObjectId): Promise<Member> {
+		const target = await this.memberModel.findOne({ _id: likeRefId, memberStatus: MemberStatus.ACTIVE }).exec();
+		if (!target) throw new InternalServerErrorException(Message.NO_DATA_FOUND);
+
+		const input: LikeInput = {
+			memberId: memberId,
+			likeRefId: likeRefId,
+			likeGroup: LikeGroup.MEMBER,
+		};
+
+		const modifier: number = await this.likeService.toggleLike(input);
+		const result = await this.memberStatusEditor({ _id: likeRefId, targetKey: 'memberLikes', modifier: modifier });
+
+		if (!result) throw new InternalServerErrorException(Message.SOMETHING_WENT_WRONG);
+
+		return result;
 	}
 
 	/** ADMIN **/

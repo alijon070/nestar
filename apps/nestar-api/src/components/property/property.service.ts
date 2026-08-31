@@ -24,8 +24,8 @@ export class PropertyService {
 	constructor(
 		@InjectModel('Property') private readonly propertyModel: Model<Property>,
 		private readonly memberService: MemberService,
-		private authservice: AuthService,
-		private viewservice: ViewService,
+		private authService: AuthService,
+		private viewService: ViewService,
 	) {}
 
 	public async createProperty(input: PropertyInput): Promise<Property> {
@@ -38,7 +38,7 @@ export class PropertyService {
 
 			return result;
 		} catch (err) {
-			console.log('Error, createProperty:', (err as Error).message);
+			console.log('Error, Service.model:', (err as Error).message);
 			throw new BadRequestException(Message.CREATE_FAILED);
 		}
 	}
@@ -57,7 +57,7 @@ export class PropertyService {
 
 			if (memberId) {
 				const viewInput = { memberId: memberId, viewRefId: propertyId, viewGroup: ViewGroup.PROPERTY };
-				const newView = await this.viewservice.recordView(viewInput);
+				const newView = await this.viewService.recordView(viewInput);
 				if (newView) {
 					await this.propertyStatusEditor({ _id: propertyId, targetKey: 'propertyViews', modifier: 1 });
 					result.propertyViews++;
@@ -68,7 +68,7 @@ export class PropertyService {
 
 			return result;
 		} catch (err) {
-			console.log('Error, getProperty:', (err as Error).message);
+			console.log('Error, Service.model:', (err as Error).message);
 			throw new BadRequestException(Message.NO_DATA_FOUND);
 		}
 	}

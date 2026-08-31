@@ -36,7 +36,7 @@ export class BoardArticleService {
 
 			return result;
 		} catch (err) {
-			console.log('Error, createBoardArticle:', (err as Error).message);
+			console.log('Error, Service.model:', (err as Error).message);
 			throw new BadRequestException(Message.CREATE_FAILED);
 		}
 	}
@@ -67,7 +67,7 @@ export class BoardArticleService {
 
 			return result;
 		} catch (err) {
-			console.log('Error, getBoardArticle:', (err as Error).message);
+			console.log('Error, Service.model:', (err as Error).message);
 			throw new BadRequestException(Message.NO_DATA_FOUND);
 		}
 	}
