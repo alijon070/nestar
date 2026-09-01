@@ -2,7 +2,6 @@ import { BadRequestException, Injectable, InternalServerErrorException } from '@
 import { InjectModel } from '@nestjs/mongoose';
 import { BoardArticle, BoardArticles } from '../../libs/dto/board-article/board-article';
 import { MemberService } from '../member/member.service';
-import { AuthService } from '../auth/auth.service';
 import { ViewService } from '../view/view.service';
 import { Model, ObjectId } from 'mongoose';
 import {
@@ -25,7 +24,7 @@ export class BoardArticleService {
 	constructor(
 		@InjectModel('BoardArticle') private readonly boardArticleModel: Model<BoardArticle>,
 		private readonly memberService: MemberService,
-		private viewservice: ViewService,
+		private viewService: ViewService,
 		private likeService: LikeService,
 	) {}
 
@@ -57,7 +56,7 @@ export class BoardArticleService {
 
 			if (memberId) {
 				const viewInput = { memberId: memberId, viewRefId: articleId, viewGroup: ViewGroup.ARTICLE };
-				const newView = await this.viewservice.recordView(viewInput);
+				const newView = await this.viewService.recordView(viewInput);
 				if (newView) {
 					await this.boardArticleStatusEditor({ _id: articleId, targetKey: 'articleViews', modifier: 1 });
 				}
