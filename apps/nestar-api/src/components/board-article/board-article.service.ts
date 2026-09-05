@@ -14,7 +14,7 @@ import { BoardArticleStatus } from '../../libs/enums/board-article.enum';
 import { StatisticsModifier, T } from '../../libs/types/common';
 import { ViewGroup } from '../../libs/enums/view.enum';
 import { BoardArticleUpdate } from '../../libs/dto/board-article/board-article.update';
-import { lookupMember, shapeIntoMongoObjectId } from '../../libs/types/config';
+import { lookupAuthMemberLiked, lookupMember, shapeIntoMongoObjectId } from '../../libs/types/config';
 import { LikeInput } from '../../libs/dto/like/like.input';
 import { LikeGroup } from '../../libs/enums/like.enum';
 import { LikeService } from '../like/like.service';
@@ -92,8 +92,8 @@ export class BoardArticleService {
 		return result;
 	}
 
-	public async getBoardArticles(memberIdd: ObjectId, input: BoardArticlesInquiry): Promise<BoardArticles> {
-		const { articleCategory, text, memberId } = input.search;
+	public async getBoardArticles(memberId: ObjectId, input: BoardArticlesInquiry): Promise<BoardArticles> {
+		const { articleCategory, text } = input.search;
 		const match: T = { articleStatus: BoardArticleStatus.ACTIVE };
 		const sort: T = { [input?.sort ?? 'ceatedAt']: input?.direction ?? Direction.DESC };
 
@@ -112,7 +112,7 @@ export class BoardArticleService {
 						list: [
 							{ $skip: (input.page - 1) * input.limit },
 							{ $limit: input.limit },
-							//meliked
+							lookupAuthMemberLiked(memberId),
 							lookupMember,
 							{ $unwind: '$memberData' },
 						],
