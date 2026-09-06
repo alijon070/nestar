@@ -4,9 +4,22 @@ import { BatchService } from './batch.service';
 import { ConfigModule } from '@nestjs/config';
 import { DatabaseModule } from './database/database.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { MongooseModule } from '@nestjs/mongoose';
+import PropertySchema from '../../nestar-api/src/schemas/Property.model';
+import MemberSchema from '../../nestar-api/src/schemas/Member.model';
+import { MemberModule } from '../../nestar-api/src/components/member/member.module';
+import { PropertyModule } from '../../nestar-api/src/components/property/property.module';
 
 @Module({
-	imports: [ConfigModule.forRoot(), DatabaseModule, ScheduleModule.forRoot()],
+	imports: [
+		ConfigModule.forRoot(),
+		DatabaseModule,
+		ScheduleModule.forRoot(),
+		MongooseModule.forFeature([{ name: 'Property', schema: PropertySchema }]),
+		MongooseModule.forFeature([{ name: 'Member', schema: MemberSchema }]),
+		MemberModule,
+		PropertyModule,
+	],
 	controllers: [BatchController],
 	providers: [BatchService],
 })
