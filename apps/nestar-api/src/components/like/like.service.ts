@@ -46,7 +46,7 @@ export class LikeService {
 		return result ? [{ memberId: memberId, likeRefId: likeRefId, myFavorite: true }] : [];
 	}
 
-	public async getFavoriteProperties(memberId: ObjectId, input: OrdinaryInquiry): Promise<Properties | null> {
+	public async getFavoriteProperties(memberId: ObjectId, input: OrdinaryInquiry): Promise<Properties> {
 		const { page, limit } = input;
 		const match: T = { likeGroup: LikeGroup.PROPERTY, memberId: memberId };
 
@@ -77,10 +77,9 @@ export class LikeService {
 			])
 			.exec();
 
-		console.log(data);
 		const result: Properties = { list: [], metaCounter: data[0].metaCounter };
-		console.log(result);
 		result.list = data[0].list.map((ele) => ele.favoriteProperty);
+
 		return result;
 	}
 }
