@@ -98,7 +98,7 @@ export class BoardArticleService {
 		const sort: T = { [input?.sort ?? 'ceatedAt']: input?.direction ?? Direction.DESC };
 
 		if (memberId) match.memberId = shapeIntoMongoObjectId(memberId);
-		if (articleCategory) match.articleCategory = { $in: articleCategory };
+		if (articleCategory) match.articleCategory = { $in: [articleCategory] };
 		if (text) match.articleTitle = { $regex: new RegExp(text, 'i') };
 
 		console.log('match:', match);

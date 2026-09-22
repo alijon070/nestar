@@ -49,7 +49,7 @@ const MemberSchema = new Schema(
 			default: '',
 		},
 
-		memberAdress: {
+		memberAddress: {
 			type: String,
 		},
 
