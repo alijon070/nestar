@@ -3,21 +3,21 @@ import { v4 as uuidv4 } from 'uuid';
 import * as path from 'path';
 import { T } from './common';
 
-export const availableAgentSorts = ['createAt', 'updatedAt', 'memberLikes', 'memberViews', 'memberRank'];
-export const availableMemberSorts = ['createAt', 'updatedAt', 'memberLikes', 'memberViews'];
+export const availableAgentSorts = ['createdAt', 'updatedAt', 'memberLikes', 'memberViews', 'memberRank'];
+export const availableMemberSorts = ['createdAt', 'updatedAt', 'memberLikes', 'memberViews'];
 
 export const availableOptions = ['propertyBarter', 'propertyRent'];
 export const availablePropertySorts = [
 	'createdAt',
-	'updataAt',
+	'updatedAt',
 	'propertyLikes',
 	'propertyViews',
 	'propertyRank',
 	'propertyPrice',
 ];
 
-export const availableBoardArticleSorts = ['createdAt', 'updataAt', 'articleLikes', 'articleViews'];
-export const availableCommentSorts = ['createdAt', 'updataAt'];
+export const availableBoardArticleSorts = ['createdAt', 'updatedAt', 'articleLikes', 'articleViews'];
+export const availableCommentSorts = ['createdAt', 'updatedAt'];
 /**  IMAGE CONFIGURATION (config.js) **/
 
 export const validMimeTypes = ['.png', '.jpg', '.jpeg'];

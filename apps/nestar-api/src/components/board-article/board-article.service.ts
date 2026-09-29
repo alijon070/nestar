@@ -94,12 +94,22 @@ export class BoardArticleService {
 
 	public async getBoardArticles(memberId: ObjectId, input: BoardArticlesInquiry): Promise<BoardArticles> {
 		const { articleCategory, text } = input.search;
-		const match: T = { articleStatus: BoardArticleStatus.ACTIVE };
-		const sort: T = { [input?.sort ?? 'ceatedAt']: input?.direction ?? Direction.DESC };
 
-		if (memberId) match.memberId = shapeIntoMongoObjectId(memberId);
-		if (articleCategory) match.articleCategory = { $in: [articleCategory] };
-		if (text) match.articleTitle = { $regex: new RegExp(text, 'i') };
+		const match: T = {
+			articleStatus: BoardArticleStatus.ACTIVE,
+		};
+
+		const sort: T = {
+			[input?.sort ?? 'createdAt']: input?.direction ?? Direction.DESC,
+		};
+
+		if (articleCategory) {
+			match.articleCategory = { $in: [articleCategory] };
+		}
+
+		if (text) {
+			match.articleTitle = { $regex: new RegExp(text, 'i') };
+		}
 
 		console.log('match:', match);
 
@@ -121,7 +131,10 @@ export class BoardArticleService {
 				},
 			])
 			.exec();
-		if (!result.length) throw new InternalServerErrorException(Message.NO_DATA_FOUND);
+
+		if (!result.length) {
+			throw new InternalServerErrorException(Message.NO_DATA_FOUND);
+		}
 
 		return result[0];
 	}
